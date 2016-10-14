@@ -24,10 +24,10 @@ public class SpellCheck {
 			
 			BufferedInputStream dict,file;
 			
-			dict  = new BufferedInputStream(new FileInputStream("banana.txt"));
+			dict  = new BufferedInputStream(new FileInputStream("dictionary.txt"));
 			FileWordRead readDict = new FileWordRead(dict);
 
-			file  = new BufferedInputStream(new FileInputStream("checkTest.txt"));
+			file  = new BufferedInputStream(new FileInputStream("d1.txt"));
 			FileWordRead readFile = new FileWordRead(file);
 			
 			
@@ -55,15 +55,6 @@ public class SpellCheck {
 		
 		
 		
-		trythis(M1, words);
-		
-	}
-
-
-	public static void trythis(LinkedListMap M1, LinkedListMap words) {
-		
-		
-		
 		while(words.numberOfElements() != 0){
 			if(reversal(M1, words)){
 				words.removeFirst();
@@ -81,7 +72,8 @@ public class SpellCheck {
 				words.removeFirst();
 			}
 			
-		
+			words.removeFirst();
+			
 		}
 	}
 		
