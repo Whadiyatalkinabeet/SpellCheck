@@ -14,15 +14,6 @@ public class LinkedListMap implements IMap {
 		M.add(key);
 	}
 	
-	public String removeFirst() {
-		return M.removeFirst();
-	}
-	
-	public String peekFirst() {
-		return M.peekFirst();
-	}
-
-	
 	public void remove(String key) throws MapException {
 		M.remove(key);
 	}

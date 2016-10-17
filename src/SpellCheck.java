@@ -13,20 +13,17 @@ public class SpellCheck {
 		}
 		
 		LinkedListMap M1 = new LinkedListMap();
-		LinkedListMap words = new LinkedListMap();
 		
 		
-
-		try{
-			
-			BufferedInputStream dict,file;
+		BufferedInputStream dict,file;
 			
 			dict  = new BufferedInputStream(new FileInputStream("dictionary.txt"));
 			FileWordRead readDict = new FileWordRead(dict);
 
 			file  = new BufferedInputStream(new FileInputStream("d1.txt"));
 			FileWordRead readFile = new FileWordRead(file);
-			
+
+		try{
 			
 			while (readDict.hasNextWord()){
 				
@@ -34,15 +31,8 @@ public class SpellCheck {
 				
 			}
 			
-			while (readFile.hasNextWord()){
-				
-				words.insert(readFile.nextWord());
-				
-			}
-			
-			
 			dict.close();
-			file.close();
+			
 			
 			}
 		catch (IOException e){ // catch exceptions caused by file input/output errors
@@ -53,59 +43,67 @@ public class SpellCheck {
 		StringHashCode aye = new StringHashCode();
 		System.out.println(aye.giveCode("Nyal"));
 		
-		while(words.numberOfElements() != 0){
-			
 		
-			if(reversal(M1, words)){
-				words.removeFirst();
-			}
+		
+		
+		
+		
+		while(readFile.hasNextWord()){
+		String word = readFile.nextWord();
+		
+			if (!(M1.find(word))){
+	
+				if(reversal(M1, word)){
+					word = readFile.nextWord();
+				}
 			
-			if (substitution(M1, words)){
-				words.removeFirst();
-			}
+				if (substitution(M1, word)){
+					word = readFile.nextWord();
+				}
 			
-			if(omission(M1, words)){
-				words.removeFirst();
-			}
+				if(omission(M1, word)){
+					word = readFile.nextWord();
+				}
 			
-			if (insertion(M1, words)){
-				words.removeFirst();
-			}
+				if (insertion(M1, word)){
+					word = readFile.nextWord();
+				}
 			
-			words.removeFirst();
+			}
 			
 		}
 		
+		file.close();
+		
 	}
 
-	public static Boolean reversal(LinkedListMap M1, LinkedListMap words) {
+	public static Boolean reversal(LinkedListMap M1, String word) {
 		Boolean delete = false;
 		int i;
 		char temp;
 		
 		
+		String MisspeltWord = word;
+		
+		char[] wordChar = MisspeltWord.toCharArray();
+		
+		
+		for (i = 0; i < wordChar.length - 1; i++ ){
 
-		String MisspeltWord = words.peekFirst();
-		
-		char[] word = MisspeltWord.toCharArray();
-		
-		
-		for (i = 0; i < word.length - 1; i++ ){
-
-			temp = word[i];
-			word[i] = word[i+1];
-			word[i+1] = temp;
+			temp = wordChar[i];
+			wordChar[i] = wordChar[i+1];
+			wordChar[i+1] = temp;
 			
-			String SwappedWord = new String(word);
+			String SwappedWord = new String(wordChar);
 
-			if (M1.find(SwappedWord) && !(words.peekFirst().equals(SwappedWord))) {
-				System.out.println(words.peekFirst() + "==>" + SwappedWord + "		reversal");
+			if (M1.find(SwappedWord) && !(word.equals(SwappedWord))) {
+				System.out.println(word + "==>" + SwappedWord + "		reversal");
 				delete = true;
 			}
 			else {
-				temp = word[i];
-				word[i] = word[i+1];
-				word[i+1] = temp;
+				temp = wordChar[i];
+				wordChar[i] = wordChar[i+1];
+				wordChar[i+1] = temp;
 			}
 		}
 		
@@ -113,19 +111,19 @@ public class SpellCheck {
 
 	}
 
-	public static Boolean omission(LinkedListMap M1, LinkedListMap words) {
+	public static Boolean omission(LinkedListMap M1, String word) {
 		Boolean delete = false;
 		int i;
 
-		StringBuilder MisspeltWord = new StringBuilder(words.peekFirst());
+		StringBuilder MisspeltWord = new StringBuilder(word);
 
 		for (i = 0; i < MisspeltWord.length(); i++) {
 			char placeholder = MisspeltWord.charAt(i);
 			MisspeltWord.deleteCharAt(i);
-			String word = MisspeltWord.toString();
+			String wordOmission = MisspeltWord.toString();
 
-			if (M1.find(word)) {
-				System.out.println(words.peekFirst() + "==>" + word + "		omission");
+			if (M1.find(wordOmission)) {
+				System.out.println(word + "==>" + wordOmission + "		omission");
 				delete = true;
 			}
 			MisspeltWord.insert(i, placeholder);
@@ -134,7 +132,7 @@ public class SpellCheck {
 		return delete;
 	}
 
-	public static Boolean insertion(LinkedListMap M1, LinkedListMap words) {
+	public static Boolean insertion(LinkedListMap M1, String word) {
 		Boolean delete = false;
 		int i, j;
 
@@ -144,16 +142,15 @@ public class SpellCheck {
 			alphabet[ch - 'a'] = ch;
 		}
 
-		StringBuilder MisspeltWord = new StringBuilder(words.peekFirst());
+		StringBuilder MisspeltWord = new StringBuilder(word);
 
 		for (i = 0; i < MisspeltWord.length() + 1; i++) {
 			for (j = 0; j < alphabet.length; j++) {
 				MisspeltWord.insert(i, alphabet[j]);
-				String word = MisspeltWord.toString();
+				String wordInsertion = MisspeltWord.toString();
 
-				if (M1.find(word)) {
-					System.out.println(words.peekFirst() + "==>" + word
-							+ "		insertion");
+				if (M1.find(wordInsertion)) {
+					System.out.println(word + "==>" + wordInsertion + "		insertion");
 					delete = true;
 				}
 				MisspeltWord.deleteCharAt(i);
@@ -164,7 +161,7 @@ public class SpellCheck {
 
 	}
 
-	public static Boolean substitution(LinkedListMap M1, LinkedListMap words) {
+	public static Boolean substitution(LinkedListMap M1, String word) {
 		Boolean delete = false;
 
 		int i, j;
@@ -175,7 +172,7 @@ public class SpellCheck {
 			alphabet[ch - 'a'] = ch;
 		}
 
-		StringBuilder MisspeltWord = new StringBuilder(words.peekFirst());
+		StringBuilder MisspeltWord = new StringBuilder(word);
 
 		for (i = 0; i < MisspeltWord.length(); i++) {
 
@@ -185,10 +182,10 @@ public class SpellCheck {
 
 				MisspeltWord.setCharAt(i, alphabet[j]);
 
-				String word = MisspeltWord.toString();
-				if (M1.find(word) && !(words.peekFirst().equals(word))) {
-					System.out.println(words.peekFirst() + "==>" + word
-							+ "		substitution");
+				String wordSubstitution = MisspeltWord.toString();
+				
+				if (M1.find(wordSubstitution) && !(word.equals(wordSubstitution))) {
+					System.out.println(word + "==>" + wordSubstitution + "		substitution");
 					delete = true;
 					MisspeltWord.setCharAt(i, charholder);
 				}
