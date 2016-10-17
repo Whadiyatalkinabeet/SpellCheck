@@ -1,10 +1,21 @@
 
 public class StringHashCode implements IHashCode{
 
-	@Override
+	
 	public int giveCode(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
+		int hashCode = 0;
+		String sb = new String(o.toString());
+		
+		char[] c = sb.toCharArray();
+		
+		int i;
+		
+		for(i = 0; i < c.length; i++){
+			hashCode = (c[i]*(7^i) % 11);
+		}
+		
+		
+		return hashCode;
 	}
 
 }

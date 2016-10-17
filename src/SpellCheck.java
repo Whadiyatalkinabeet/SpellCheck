@@ -50,7 +50,8 @@ public class SpellCheck {
 			System.exit(0);
 		}
 	
-	
+		StringHashCode aye = new StringHashCode();
+		System.out.println(aye.giveCode("Nyal"));
 		
 		while(words.numberOfElements() != 0){
 			
