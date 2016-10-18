@@ -13,6 +13,7 @@ public class SpellCheck {
 		}
 		
 		LinkedListMap M1 = new LinkedListMap();
+		HashTableMap HashMap = new HashTableMap(null, 0);
 		
 		
 		BufferedInputStream dict,file;

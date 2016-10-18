@@ -11,11 +11,13 @@ public class StringHashCode implements IHashCode{
 		int i;
 		
 		for(i = 0; i < c.length; i++){
-			hashCode = (c[i]*(7^i) % 11);
+			hashCode += c[i]*(7^i);
 		}
 		
-		
+		hashCode %= 7;
 		return hashCode;
 	}
+
+	
 
 }
