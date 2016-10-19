@@ -1,12 +1,11 @@
 import java.util.Iterator;
-import java.math.*;
 
-public class HashTableMap implements IMap{
+
+public class HashTableMap implements IMap, IHashTableMonitor{
 	
 	private IHashCode inputCode;
 	private float maxLoadFactor;
-	
-	
+	private float nElements = 0;
 	private String[] HashTable = new String[7];
 	private StringHashCode hCode = new StringHashCode();
 	
@@ -19,8 +18,6 @@ public class HashTableMap implements IMap{
 	
 	private int doubleHash(String key){
 		int doublehashCode = 0;
-		char[] c = key.toCharArray();
-		int i;
 		
 		doublehashCode = 5 + (hCode.giveCode(key));
 		
@@ -29,39 +26,53 @@ public class HashTableMap implements IMap{
 	
 	public void insert(String key) {
 		
+		//System.out.println((maxLoadFactor * HashTable.length) + " " +  nElements + " filled of " + HashTable.length + " spaces");
 		
-		if (getLoadFactor() < maxLoadFactor) {
-		//if ( ((numberOfElements())/ HashTable.length) < maxLoadFactor){
+		if ((nElements) < (maxLoadFactor * HashTable.length)) {
+			
+		
 			
 				if (HashTable[hCode.giveCode(key) % HashTable.length]  == null){
 					HashTable[hCode.giveCode(key) % HashTable.length] = key;
 					System.out.println(key + "  added using single hash");
-					return;
-				}
-				else if (HashTable[doubleHash(key) % 5] == null) {
+					nElements += 1f;
 					
-					HashTable[doubleHash(key) % 5] = key;
-					System.out.println(key + "  added using double hash");
 					return;
 				}
 				else  {
 					for (int i = 1; i < HashTable.length; i++){
-						if (HashTable[(doubleHash(key) * i) % 5] == null) {
-							HashTable[(doubleHash(key) * i) % 5] = key;
+						if (HashTable[(doubleHash(key) * i) % HashTable.length] == null) {
+							HashTable[(doubleHash(key) * i) % HashTable.length] = key;
 							System.out.println(key + "  added using double * " + i + " hash");
+							nElements += 1f;
 							return;
 						}
 					}
 				}
 		}
-		else {
+		
 			System.out.println("max load factor reached");
 			for (int i = 0; i < HashTable.length; i++){
 				System.out.println(i+1 + " " + HashTable[i]);
 			}
-			System.exit(0);
+			
+			
+			//reHash();
+			
+		
+	}
+	
+	public void print(){
+		int i;
+		
+		for (i = 0; i < HashTable.length; i++){
+			System.out.println(HashTable[i] + " " + i);
 		}
-}
+		
+		for (i = 0; i < 4; i++){
+			System.out.println(HashTable[i] + " " + i);
+		}
+	}
 	
 	private void reHash(){
 		int newArraySize = 2 * HashTable.length;
@@ -70,7 +81,11 @@ public class HashTableMap implements IMap{
 			newArraySize += 1;
 		}
 		System.out.println(newArraySize);
+		
+		
 		HashTable = new String[newArraySize];
+		
+		
 		
 	}
 	
@@ -95,27 +110,27 @@ public class HashTableMap implements IMap{
 
 	
 	public boolean find(String key) {
+		if (HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
+			return true;
+		}
+		else {
+			for (int i = 1; i < HashTable.length; i++){
+				if (HashTable[(doubleHash(key) * i) % HashTable.length].equals(key)) {
+					return true;
+				}
+			}
+		}
 		
 		return false;
+		
 	}
 
-	private float getLoadFactor(){
-		float LoadFactor;
-		
-		LoadFactor =  ((numberOfElements())/ HashTable.length);
-		
-		return LoadFactor;
-		
-	}
+
 	
 	public int numberOfElements() {
-	int i;
+	
 	int counter = 0;
-	for (i = 0; i < HashTable.length; i++){
-		if (HashTable[i] != null){
-			counter += 1;
-		}
-	}
+
 		return counter;
 	}
 
@@ -123,6 +138,24 @@ public class HashTableMap implements IMap{
 	public Iterator<String> elements() {
 		
 		return null;
+	}
+
+	
+	public float getMaxLoadFactor() {
+		
+		return maxLoadFactor;
+	}
+
+	@Override
+	public float getLoadFactor() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float averNumProbes() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
