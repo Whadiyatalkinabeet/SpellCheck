@@ -14,7 +14,7 @@ public class StringHashCode implements IHashCode{
 			hashCode += c[i]*(33^i);
 		}
 		
-		hashCode %= 7;
+		//hashCode %= 7;
 		return hashCode;
 	}
 

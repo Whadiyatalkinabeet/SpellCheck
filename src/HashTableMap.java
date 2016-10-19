@@ -29,10 +29,12 @@ public class HashTableMap implements IMap{
 	
 	public void insert(String key) {
 		
+		
 		if (getLoadFactor() < maxLoadFactor) {
+		//if ( ((numberOfElements())/ HashTable.length) < maxLoadFactor){
 			
-				if (HashTable[hCode.giveCode(key)] == null){
-					HashTable[hCode.giveCode(key)] = key;
+				if (HashTable[hCode.giveCode(key) % HashTable.length]  == null){
+					HashTable[hCode.giveCode(key) % HashTable.length] = key;
 					System.out.println(key + "  added using single hash");
 					return;
 				}
