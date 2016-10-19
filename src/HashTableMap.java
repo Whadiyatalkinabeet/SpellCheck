@@ -22,30 +22,41 @@ public class HashTableMap implements IMap{
 		char[] c = key.toCharArray();
 		int i;
 		
-		doublehashCode = 5 - (hCode.giveCode(key)  % 5);
+		doublehashCode = 5 + (hCode.giveCode(key));
 		
 		return doublehashCode;
 	}
 	
 	public void insert(String key) {
 		
-		if (getLoadFactor() < maxLoadFactor) {	
+		if (getLoadFactor() < maxLoadFactor) {
+			
 				if (HashTable[hCode.giveCode(key)] == null){
 					HashTable[hCode.giveCode(key)] = key;
 					System.out.println(key + "  added using single hash");
 					return;
 				}
-				else if (HashTable[doubleHash(key)] == null) {
-					HashTable[doubleHash(key)] = key;
-					System.out.println(key + "  added using double hash");
-	
-				}
-				else {
+				else if (HashTable[doubleHash(key) % 5] == null) {
 					
+					HashTable[doubleHash(key) % 5] = key;
+					System.out.println(key + "  added using double hash");
+					return;
+				}
+				else  {
+					for (int i = 1; i < HashTable.length; i++){
+						if (HashTable[(doubleHash(key) * i) % 5] == null) {
+							HashTable[(doubleHash(key) * i) % 5] = key;
+							System.out.println(key + "  added using double * " + i + " hash");
+							return;
+						}
+					}
 				}
 		}
 		else {
 			System.out.println("max load factor reached");
+			for (int i = 0; i < HashTable.length; i++){
+				System.out.println(i+1 + " " + HashTable[i]);
+			}
 			System.exit(0);
 		}
 }
