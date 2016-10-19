@@ -8,6 +8,10 @@ public class StringHashCode implements IHashCode{
 		
 		char[] c = sb.toCharArray();
 		
+		
+		
+		
+		
 		int i;
 		
 		for(i = 0; i < c.length; i++){

@@ -8,6 +8,8 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	private float nElements = 0;
 	private String[] HashTable = new String[7];
 	private StringHashCode hCode = new StringHashCode();
+	private int probes = 0;
+	private int reHashCounter = 0;
 	
 	public HashTableMap() throws MapException{}
 
@@ -19,7 +21,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	private int doubleHash(String key){
 		int doublehashCode = 0;
 		
-		doublehashCode = 5 + (hCode.giveCode(key));
+		doublehashCode = 5 + (hCode.giveCode(key) % HashTable.length);
 		
 		return doublehashCode;
 	}
@@ -28,7 +30,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		
 		//System.out.println((maxLoadFactor * HashTable.length) + " " +  nElements + " filled of " + HashTable.length + " spaces");
 		
-		if ((nElements) < (maxLoadFactor * HashTable.length)) {
+		if (getLoadFactor() < getMaxLoadFactor()) {
 			
 		
 			
@@ -47,17 +49,25 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 							nElements += 1f;
 							return;
 						}
+						else{
+							probes += 1;
+						}
 					}
 				}
+				
 		}
 		
 			System.out.println("max load factor reached");
-			for (int i = 0; i < HashTable.length; i++){
-				System.out.println(i+1 + " " + HashTable[i]);
+			/*for (int i = 0; i < HashTable.length; i++){
+				System.out.println(i + " " + HashTable[i]);
 			}
-			
-			
-			//reHash();
+			if (HashTable[3] != null){
+			System.out.println((hCode.giveCode(HashTable[3])) % 17);
+			}
+			else {System.out.println("HashTable 3 is null");}
+			System.exit(0);*/
+			reHashCounter += 1;
+			reHash();
 			
 		
 	}
@@ -69,25 +79,47 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 			System.out.println(HashTable[i] + " " + i);
 		}
 		
-		for (i = 0; i < 4; i++){
-			System.out.println(HashTable[i] + " " + i);
-		}
+		System.out.println(nElements);
+		System.out.println(getLoadFactor());
+		System.out.println(reHashCounter);
+		
+		
 	}
 	
 	private void reHash(){
 		int newArraySize = 2 * HashTable.length;
+		int i;
 		
 		while (!(isPrime(newArraySize))){
 			newArraySize += 1;
 		}
 		System.out.println(newArraySize);
 		
+		String[] HashTableClone = HashTable.clone();
+		HashTable  = new String[newArraySize];
 		
-		HashTable = new String[newArraySize];
-		
-		
+		for (i = 0; i < HashTable.length; i++){
+			if (HashTable[i] != null){
+				if (HashTable[(hCode.giveCode(HashTableClone[i])) % HashTable.length] == null){
+					HashTable[(hCode.giveCode(HashTableClone[i])) % HashTable.length] = HashTableClone[i];
+					nElements += 1f;
+				}
+			
+				else{
+					for (int j = 1; j < HashTable.length; j++){
+						if (HashTable[(doubleHash(HashTableClone[i]) * i) % HashTable.length] == null) {
+						HashTable[(doubleHash(HashTableClone[i]) * i) % HashTable.length] = HashTableClone[i];
+						nElements += 1f;
+						}
+					}
+				}
+			}
+			
+		}
 		
 	}
+	
+	
 	
 	private Boolean isPrime(int newArraySize){
 		
@@ -142,14 +174,12 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 
 	
 	public float getMaxLoadFactor() {
-		
 		return maxLoadFactor;
 	}
 
-	@Override
+	
 	public float getLoadFactor() {
-		// TODO Auto-generated method stub
-		return 0;
+		return (nElements / HashTable.length);
 	}
 
 	@Override

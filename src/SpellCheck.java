@@ -33,6 +33,9 @@ public class SpellCheck {
 				
 			}
 			
+			HashMap.print();
+			System.out.println(HashMap.find("body"));
+			
 			dict.close();
 			
 			
