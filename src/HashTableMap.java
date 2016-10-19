@@ -1,14 +1,13 @@
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.math.*;
 
 public class HashTableMap implements IMap{
 	
 	private IHashCode inputCode;
 	private float maxLoadFactor;
-	private float LoadFactor;
+	
 	
 	private String[] HashTable = new String[7];
-	
 	private StringHashCode hCode = new StringHashCode();
 	
 	public HashTableMap() throws MapException{}
@@ -23,29 +22,58 @@ public class HashTableMap implements IMap{
 		char[] c = key.toCharArray();
 		int i;
 		
-		for(i = 0; i < c.length; i++){
-			doublehashCode += c[i]*(7^i);
-		}
-		
-		doublehashCode = 5 - (doublehashCode % 5);
+		doublehashCode = 5 - (hCode.giveCode(key)  % 5);
 		
 		return doublehashCode;
 	}
 	
 	public void insert(String key) {
-		Boolean flag = false;
 		
-		while (flag = false){
-			if (HashTable[hCode.giveCode(key)].isEmpty()){
-				HashTable[hCode.giveCode(key)] = key;
-				flag = true;
-			}
-			else if (HashTable[doubleHash(key)].isEmpty()){
-				HashTable[doubleHash(key)] = key;
-				flag = true;
+		if (getLoadFactor() < maxLoadFactor) {	
+				if (HashTable[hCode.giveCode(key)] == null){
+					HashTable[hCode.giveCode(key)] = key;
+					System.out.println(key + "  added using single hash");
+					return;
+				}
+				else if (HashTable[doubleHash(key)] == null) {
+					HashTable[doubleHash(key)] = key;
+					System.out.println(key + "  added using double hash");
+	
+				}
+				else {
+					
+				}
+		}
+		else {
+			System.out.println("max load factor reached");
+			System.exit(0);
+		}
+}
+	
+	private void reHash(){
+		int newArraySize = 2 * HashTable.length;
+		
+		while (!(isPrime(newArraySize))){
+			newArraySize += 1;
+		}
+		System.out.println(newArraySize);
+		HashTable = new String[newArraySize];
+		
+	}
+	
+	private Boolean isPrime(int newArraySize){
+		
+		if (newArraySize % 2 == 0){
+			return false;
+		}
+		for(int i = 3; i*i < newArraySize; i += 2){
+			if (newArraySize % i == 0){
+				return false;
 			}
 		}
+		return true;
 	}
+
 
 	
 	public void remove(String key) throws MapException {
@@ -58,10 +86,24 @@ public class HashTableMap implements IMap{
 		return false;
 	}
 
+	private float getLoadFactor(){
+		float LoadFactor;
+		
+		LoadFactor =  ((numberOfElements())/ HashTable.length);
+		
+		return LoadFactor;
+		
+	}
 	
 	public int numberOfElements() {
-		
-		return 0;
+	int i;
+	int counter = 0;
+	for (i = 0; i < HashTable.length; i++){
+		if (HashTable[i] != null){
+			counter += 1;
+		}
+	}
+		return counter;
 	}
 
 	

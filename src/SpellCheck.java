@@ -13,7 +13,7 @@ public class SpellCheck {
 		}
 		
 		LinkedListMap M1 = new LinkedListMap();
-		HashTableMap HashMap = new HashTableMap(null, 0);
+		HashTableMap HashMap = new HashTableMap(null, 0.75f);
 		
 		
 		BufferedInputStream dict,file;
@@ -28,7 +28,8 @@ public class SpellCheck {
 			
 			while (readDict.hasNextWord()){
 				
-				M1.insert(readDict.nextWord());
+				//M1.insert(readDict.nextWord());
+				HashMap.insert(readDict.nextWord());
 				
 			}
 			
@@ -41,9 +42,9 @@ public class SpellCheck {
 			System.exit(0);
 		}
 	
-		StringHashCode aye = new StringHashCode();
-		System.out.println(aye.giveCode("Nyal"));
-		
+		/*StringHashCode aye = new StringHashCode();
+		System.out.println(aye.giveCode("sublibrarians"));
+		 HashMap.insert("sublibrarians");*/
 		
 		
 		
