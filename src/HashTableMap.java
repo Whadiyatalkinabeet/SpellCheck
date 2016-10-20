@@ -10,6 +10,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	private StringHashCode hCode = new StringHashCode();
 	private int probes = 0;
 	private int reHashCounter = 0;
+	private int primeCode = 5;
 	
 	public HashTableMap() throws MapException{}
 
@@ -21,7 +22,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	private int doubleHash(String key){
 		int doublehashCode = 0;
 		
-		doublehashCode = 5 + (hCode.giveCode(key) % HashTable.length);
+		doublehashCode = primeCode + (hCode.giveCode(key) % HashTable.length);
 		
 		return doublehashCode;
 	}
@@ -36,7 +37,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 			
 				if (HashTable[hCode.giveCode(key) % HashTable.length]  == null){
 					HashTable[hCode.giveCode(key) % HashTable.length] = key;
-					System.out.println(key + "  added using single hash");
+					//System.out.println(key + "  added using single hash");
 					nElements += 1f;
 					
 					return;
@@ -45,7 +46,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 					for (int i = 1; i < HashTable.length; i++){
 						if (HashTable[(doubleHash(key) * i) % HashTable.length] == null) {
 							HashTable[(doubleHash(key) * i) % HashTable.length] = key;
-							System.out.println(key + "  added using double * " + i + " hash");
+							//System.out.println(key + "  added using double * " + i + " hash");
 							nElements += 1f;
 							return;
 						}
@@ -57,7 +58,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 				
 		}
 		
-			System.out.println("max load factor reached");
+			//System.out.println("max load factor reached");
 			/*for (int i = 0; i < HashTable.length; i++){
 				System.out.println(i + " " + HashTable[i]);
 			}
@@ -67,6 +68,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 			else {System.out.println("HashTable 3 is null");}
 			System.exit(0);*/
 			reHashCounter += 1;
+			nElements = 0;
 			reHash();
 			
 		
@@ -80,6 +82,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		}
 		
 		System.out.println(nElements);
+		System.out.println("183719.0");
 		System.out.println(getLoadFactor());
 		System.out.println(reHashCounter);
 		
@@ -90,38 +93,50 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		int newArraySize = 2 * HashTable.length;
 		int i;
 		
+		while (!(isPrime(primeCode))){
+			primeCode += 1;
+		}
+		
 		while (!(isPrime(newArraySize))){
 			newArraySize += 1;
 		}
-		System.out.println(newArraySize);
+		//System.out.println(newArraySize);
 		
 		String[] HashTableClone = HashTable.clone();
 		HashTable  = new String[newArraySize];
 		
-		for (i = 0; i < HashTable.length; i++){
-			if (HashTable[i] != null){
+		for (i = 0; i < HashTableClone.length; i++){
+			if (HashTableClone[i] != null){
+			insert(HashTableClone[i]);
+			nElements += 1;
+			}
+		}
+		
+		/*for (i = 0; i < HashTableClone.length; i++){
+			//if (HashTable[i] != null){
+				System.out.println(HashTable[(hCode.giveCode(HashTableClone[i])) % HashTable.length] + " " + (hCode.giveCode(HashTableClone[i])) % HashTable.length);
 				if (HashTable[(hCode.giveCode(HashTableClone[i])) % HashTable.length] == null){
 					HashTable[(hCode.giveCode(HashTableClone[i])) % HashTable.length] = HashTableClone[i];
-					nElements += 1f;
+					//nElements += 1f;
 				}
 			
 				else{
 					for (int j = 1; j < HashTable.length; j++){
-						if (HashTable[(doubleHash(HashTableClone[i]) * i) % HashTable.length] == null) {
-						HashTable[(doubleHash(HashTableClone[i]) * i) % HashTable.length] = HashTableClone[i];
-						nElements += 1f;
+						if (HashTable[(doubleHash(HashTableClone[i]) * j) % HashTable.length] == null) {
+						HashTable[(doubleHash(HashTableClone[i]) * j) % HashTable.length] = HashTableClone[i];
+						//nElements += 1f;
 						}
 					}
 				}
-			}
+			//}
 			
-		}
+		}*/
 		
 	}
 	
 	
 	
-	private Boolean isPrime(int newArraySize){
+	private Boolean isPrime(int newArraySize){// write reference 
 		
 		if (newArraySize % 2 == 0){
 			return false;
@@ -134,7 +149,6 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		return true;
 	}
 
-
 	
 	public void remove(String key) throws MapException {
 		
@@ -142,19 +156,25 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 
 	
 	public boolean find(String key) {
+		System.out.println(HashTable[hCode.giveCode(key) % HashTable.length] );
+		
 		if (HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
 			return true;
 		}
 		else {
 			for (int i = 1; i < HashTable.length; i++){
+				System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + i);
 				if (HashTable[(doubleHash(key) * i) % HashTable.length].equals(key)) {
 					return true;
 				}
+				else if ((HashTable[(doubleHash(key) * i) % HashTable.length] == null)){
+					
+				}
+				
 			}
+			
 		}
-		
 		return false;
-		
 	}
 
 
