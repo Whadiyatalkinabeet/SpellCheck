@@ -12,7 +12,7 @@ public class SpellCheck {
 			System.exit(0);
 		}
 		
-		LinkedListMap M1 = new LinkedListMap();
+		//LinkedListMap M1 = new LinkedListMap();
 		HashTableMap HashMap = new HashTableMap(null, 0.75f);
 		
 		
@@ -33,8 +33,8 @@ public class SpellCheck {
 				
 			}
 			
-			HashMap.print();
-			System.out.println(HashMap.find("body"));
+			//HashMap.print();
+			System.out.println(HashMap.find("seekszc"));
 			
 			dict.close();
 			
@@ -53,36 +53,36 @@ public class SpellCheck {
 		
 		
 		
-		while(readFile.hasNextWord()){
+		/*while(readFile.hasNextWord()){
 		String word = readFile.nextWord();
 		
-			if (!(M1.find(word))){
+			if (!(HashMap.find(word))){
 	
-				if(reversal(M1, word)){
+				if(reversal(HashMap, word)){
 					word = readFile.nextWord();
 				}
 			
-				if (substitution(M1, word)){
+				if (substitution(HashMap, word)){
 					word = readFile.nextWord();
 				}
 			
-				if(omission(M1, word)){
+				if(omission(HashMap, word)){
 					word = readFile.nextWord();
 				}
 			
-				if (insertion(M1, word)){
+				if (insertion(HashMap, word)){
 					word = readFile.nextWord();
 				}
 			
 			}
 			
-		}
+		}*/
 		
 		file.close();
 		
 	}
 
-	public static Boolean reversal(LinkedListMap M1, String word) {
+	public static Boolean reversal(HashTableMap M1, String word) {
 		Boolean delete = false;
 		int i;
 		char temp;
@@ -116,7 +116,7 @@ public class SpellCheck {
 
 	}
 
-	public static Boolean omission(LinkedListMap M1, String word) {
+	public static Boolean omission(HashTableMap M1, String word) {
 		Boolean delete = false;
 		int i;
 
@@ -137,7 +137,7 @@ public class SpellCheck {
 		return delete;
 	}
 
-	public static Boolean insertion(LinkedListMap M1, String word) {
+	public static Boolean insertion(HashTableMap M1, String word) {
 		Boolean delete = false;
 		int i, j;
 
@@ -166,7 +166,7 @@ public class SpellCheck {
 
 	}
 
-	public static Boolean substitution(LinkedListMap M1, String word) {
+	public static Boolean substitution(HashTableMap M1, String word) {
 		Boolean delete = false;
 
 		int i, j;
