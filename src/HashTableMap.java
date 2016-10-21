@@ -23,7 +23,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	private int doubleHash(String key){
 		int doublehashCode = 0;
 		
-		doublehashCode = primeCode + (hCode.giveCode(key) % HashTable.length);
+		doublehashCode = primeCode - (hCode.giveCode(key) % primeCode);
 		
 		return doublehashCode;
 	}
@@ -33,8 +33,6 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		//System.out.println((maxLoadFactor * HashTable.length) + " " +  nElements + " filled of " + HashTable.length + " spaces");
 		
 		if (getLoadFactor() < getMaxLoadFactor()) {
-			
-		
 			
 				if (HashTable[hCode.giveCode(key) % HashTable.length]  == null || HashTable[hCode.giveCode(key) % HashTable.length].equals("-1")){
 					HashTable[hCode.giveCode(key) % HashTable.length] = key;
@@ -48,7 +46,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 					for (int i = 1; i < HashTable.length; i++){
 						if (HashTable[(doubleHash(key) * i) % HashTable.length] == null || HashTable[(doubleHash(key) * i) % HashTable.length].equals("-1")) {
 							HashTable[(doubleHash(key) * i) % HashTable.length] = key;
-							//System.out.println(key + "  added using double * " + i + " hash");
+						    //System.out.println(key + "  added using double * " + i + " hash");
 							nElements += 1f;
 							numberOfOperations  += 1;
 							return;
@@ -60,13 +58,9 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 				}
 				
 		}
-		
-			
 			reHashCounter += 1;
 			nElements = 0;
 			reHash();
-			
-		
 	}
 	
 	public int reHashCounter(){
@@ -76,14 +70,14 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	public void print(){
 		int i;
 		
-		/*for (i = 0; i < HashTable.length; i++){
+		for (i = 0; i < HashTable.length; i++){
 			System.out.println(HashTable[i] + " " + i);
-		}*/
+		}
 		
-		System.out.println(nElements);
+		/*System.out.println(nElements);
 		System.out.println("183719.0");
 		System.out.println(getLoadFactor());
-		System.out.println(reHashCounter);
+		System.out.println(reHashCounter);*/
 		
 		
 	}
@@ -163,7 +157,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 
 	
 	public boolean find(String key) {
-		//System.out.println(HashTable[hCode.giveCode(key) % HashTable.length] );
+		
 		
 		if (HashTable[hCode.giveCode(key) % HashTable.length] != null && HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
 			numberOfOperations  += 1;
@@ -171,17 +165,15 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		}
 		else {
 			for (int i = 1; i < HashTable.length; i++){
-				//System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + i + " " + (doubleHash(key) * i) % HashTable.length);
+				//System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + (doubleHash(key) * i) % HashTable.length + " " + key);
 				
 				if (HashTable[(doubleHash(key) * i) % HashTable.length] != null && HashTable[(doubleHash(key) * i) % HashTable.length].equals(key)) {
 					numberOfOperations  += 1;
 					return true;
 				}
-				else {
+				else if (i == HashTable.length){
 					return false;
 				}
-				
-				
 			}
 			return false;
 		}

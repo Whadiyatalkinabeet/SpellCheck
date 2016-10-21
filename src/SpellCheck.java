@@ -33,10 +33,12 @@ public class SpellCheck {
 				//M1.insert(readDict.nextWord());
 				HashMap.insert(readDict.nextWord());
 				
+				
 			}
 			
 			
-			//System.out.println(HashMap.find("drones"));
+			
+			//HashMap.print();
 			
 			dict.close();
 			
@@ -69,9 +71,9 @@ public class SpellCheck {
 		
 		
 		file.close();
-		
-		System.out.println(HashMap.reHashCounter() + " " + HashMap.numberOfElements());
-		System.out.println(HashMap.averNumProbes());
+		//System.out.println(HashMap.find("lemon"));
+	//	System.out.println(HashMap.reHashCounter() + " " + HashMap.numberOfElements());
+		//System.out.println(HashMap.averNumProbes());
 		
 		
 	}
