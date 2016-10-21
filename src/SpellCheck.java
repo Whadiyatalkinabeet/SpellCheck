@@ -13,6 +13,7 @@ public class SpellCheck {
 		}
 		
 		//LinkedListMap M1 = new LinkedListMap();
+		 
 		HashTableMap HashMap = new HashTableMap(null, 0.75f);
 		
 		
@@ -33,8 +34,8 @@ public class SpellCheck {
 				
 			}
 			
-			//HashMap.print();
-			System.out.println(HashMap.find("seekszc"));
+			
+			//System.out.println(HashMap.find("antidote"));
 			
 			dict.close();
 			
@@ -45,18 +46,13 @@ public class SpellCheck {
 			System.exit(0);
 		}
 	
-		/*StringHashCode aye = new StringHashCode();
-		System.out.println(aye.giveCode("sublibrarians"));
-		 HashMap.insert("sublibrarians");*/
 		
 		
-		
-		
-		
-		/*while(readFile.hasNextWord()){
+		while(readFile.hasNextWord()){
 		String word = readFile.nextWord();
 		
 			if (!(HashMap.find(word))){
+				
 	
 				if(reversal(HashMap, word)){
 					word = readFile.nextWord();
@@ -75,10 +71,13 @@ public class SpellCheck {
 				}
 			
 			}
-			
-		}*/
+	
+		}
 		
 		file.close();
+		
+		System.out.println(HashMap.reHashCounter() + " " + HashMap.numberOfElements() + " " + HashMap.averNumProbes());
+		
 		
 	}
 
