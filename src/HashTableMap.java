@@ -35,7 +35,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 			
 		
 			
-				if (HashTable[hCode.giveCode(key) % HashTable.length]  == null){
+				if (HashTable[hCode.giveCode(key) % HashTable.length]  == null || HashTable[hCode.giveCode(key) % HashTable.length].equals("-1")){
 					HashTable[hCode.giveCode(key) % HashTable.length] = key;
 					//System.out.println(key + "  added using single hash");
 					nElements += 1f;
@@ -44,7 +44,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 				}
 				else  {
 					for (int i = 1; i < HashTable.length; i++){
-						if (HashTable[(doubleHash(key) * i) % HashTable.length] == null) {
+						if (HashTable[(doubleHash(key) * i) % HashTable.length] == null || HashTable[(doubleHash(key) * i) % HashTable.length].equals("-1")) {
 							HashTable[(doubleHash(key) * i) % HashTable.length] = key;
 							//System.out.println(key + "  added using double * " + i + " hash");
 							nElements += 1f;
@@ -58,15 +58,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 				
 		}
 		
-			//System.out.println("max load factor reached");
-			/*for (int i = 0; i < HashTable.length; i++){
-				System.out.println(i + " " + HashTable[i]);
-			}
-			if (HashTable[3] != null){
-			System.out.println((hCode.giveCode(HashTable[3])) % 17);
-			}
-			else {System.out.println("HashTable 3 is null");}
-			System.exit(0);*/
+			
 			reHashCounter += 1;
 			nElements = 0;
 			reHash();
@@ -74,12 +66,16 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		
 	}
 	
+	public int reHashCounter(){
+		return reHashCounter;
+	}
+	
 	public void print(){
 		int i;
 		
-		for (i = 0; i < HashTable.length; i++){
+		/*for (i = 0; i < HashTable.length; i++){
 			System.out.println(HashTable[i] + " " + i);
-		}
+		}*/
 		
 		System.out.println(nElements);
 		System.out.println("183719.0");
@@ -108,29 +104,11 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		for (i = 0; i < HashTableClone.length; i++){
 			if (HashTableClone[i] != null){
 			insert(HashTableClone[i]);
-			nElements += 1;
+			//nElements += 1;
 			}
 		}
 		
-		/*for (i = 0; i < HashTableClone.length; i++){
-			//if (HashTable[i] != null){
-				System.out.println(HashTable[(hCode.giveCode(HashTableClone[i])) % HashTable.length] + " " + (hCode.giveCode(HashTableClone[i])) % HashTable.length);
-				if (HashTable[(hCode.giveCode(HashTableClone[i])) % HashTable.length] == null){
-					HashTable[(hCode.giveCode(HashTableClone[i])) % HashTable.length] = HashTableClone[i];
-					//nElements += 1f;
-				}
-			
-				else{
-					for (int j = 1; j < HashTable.length; j++){
-						if (HashTable[(doubleHash(HashTableClone[i]) * j) % HashTable.length] == null) {
-						HashTable[(doubleHash(HashTableClone[i]) * j) % HashTable.length] = HashTableClone[i];
-						//nElements += 1f;
-						}
-					}
-				}
-			//}
-			
-		}*/
+		
 		
 	}
 	
@@ -151,39 +129,60 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 
 	
 	public void remove(String key) throws MapException {
-		
+		if (HashTable[hCode.giveCode(key) % HashTable.length] != null && HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
+			HashTable[hCode.giveCode(key) % HashTable.length] = "-1";
+			System.out.println("removed " + key);
+		}
+		else {
+			for (int i = 1; i < HashTable.length; i++){
+				//System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + i + " " + (doubleHash(key) * i) % HashTable.length);
+				
+				if (HashTable[(doubleHash(key) * i) % HashTable.length] != null && HashTable[(doubleHash(key) * i) % HashTable.length].equals(key)) {
+					HashTable[(doubleHash(key) * i) % HashTable.length] = "-1";
+					System.out.println("removed " + key);
+				}
+				else {
+					System.out.println(key + " does not exist");
+					return;
+					
+				}
+				
+				
+			}
+			return;
+		}
 	}
 
 	
 	public boolean find(String key) {
-		System.out.println(HashTable[hCode.giveCode(key) % HashTable.length] );
+		//System.out.println(HashTable[hCode.giveCode(key) % HashTable.length] );
 		
-		if (HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
+		if (HashTable[hCode.giveCode(key) % HashTable.length] != null && HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
 			return true;
 		}
 		else {
 			for (int i = 1; i < HashTable.length; i++){
-				System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + i);
-				if (HashTable[(doubleHash(key) * i) % HashTable.length].equals(key)) {
+				//System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + i + " " + (doubleHash(key) * i) % HashTable.length);
+				
+				if (HashTable[(doubleHash(key) * i) % HashTable.length] != null && HashTable[(doubleHash(key) * i) % HashTable.length].equals(key)) {
 					return true;
 				}
-				else if ((HashTable[(doubleHash(key) * i) % HashTable.length] == null)){
-					
+				else {
+					return false;
 				}
 				
+				
 			}
-			
+			return false;
 		}
-		return false;
+		
+		
 	}
 
 
 	
 	public int numberOfElements() {
-	
-	int counter = 0;
-
-		return counter;
+		return (int)nElements;
 	}
 
 	
@@ -205,7 +204,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	@Override
 	public float averNumProbes() {
 		// TODO Auto-generated method stub
-		return 0;
+		return probes;
 	}
 
 }
