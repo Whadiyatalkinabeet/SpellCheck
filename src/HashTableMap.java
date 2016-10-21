@@ -8,9 +8,10 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	private float nElements = 0;
 	private String[] HashTable = new String[7];
 	private StringHashCode hCode = new StringHashCode();
-	private int probes = 0;
+	private int numberOfProbes = 0;
 	private int reHashCounter = 0;
 	private int primeCode = 5;
+	private int numberOfOperations = 0;
 	
 	public HashTableMap() throws MapException{}
 
@@ -39,6 +40,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 					HashTable[hCode.giveCode(key) % HashTable.length] = key;
 					//System.out.println(key + "  added using single hash");
 					nElements += 1f;
+					numberOfOperations  += 1;
 					
 					return;
 				}
@@ -48,10 +50,11 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 							HashTable[(doubleHash(key) * i) % HashTable.length] = key;
 							//System.out.println(key + "  added using double * " + i + " hash");
 							nElements += 1f;
+							numberOfOperations  += 1;
 							return;
 						}
 						else{
-							probes += 1;
+							numberOfProbes += 1;
 						}
 					}
 				}
@@ -104,6 +107,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		for (i = 0; i < HashTableClone.length; i++){
 			if (HashTableClone[i] != null){
 			insert(HashTableClone[i]);
+			numberOfOperations  += 1;
 			//nElements += 1;
 			}
 		}
@@ -132,6 +136,8 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		if (HashTable[hCode.giveCode(key) % HashTable.length] != null && HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
 			HashTable[hCode.giveCode(key) % HashTable.length] = "-1";
 			System.out.println("removed " + key);
+			numberOfOperations  += 1;
+			nElements -= 1;
 		}
 		else {
 			for (int i = 1; i < HashTable.length; i++){
@@ -140,6 +146,8 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 				if (HashTable[(doubleHash(key) * i) % HashTable.length] != null && HashTable[(doubleHash(key) * i) % HashTable.length].equals(key)) {
 					HashTable[(doubleHash(key) * i) % HashTable.length] = "-1";
 					System.out.println("removed " + key);
+					numberOfOperations  += 1;
+					nElements -= 1;
 				}
 				else {
 					System.out.println(key + " does not exist");
@@ -158,6 +166,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		//System.out.println(HashTable[hCode.giveCode(key) % HashTable.length] );
 		
 		if (HashTable[hCode.giveCode(key) % HashTable.length] != null && HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
+			numberOfOperations  += 1;
 			return true;
 		}
 		else {
@@ -165,6 +174,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 				//System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + i + " " + (doubleHash(key) * i) % HashTable.length);
 				
 				if (HashTable[(doubleHash(key) * i) % HashTable.length] != null && HashTable[(doubleHash(key) * i) % HashTable.length].equals(key)) {
+					numberOfOperations  += 1;
 					return true;
 				}
 				else {
@@ -204,7 +214,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	@Override
 	public float averNumProbes() {
 		// TODO Auto-generated method stub
-		return probes;
+		return numberOfProbes/numberOfOperations ;
 	}
 
 }

@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 
+
 /** Main class for the Spell-Checker program */
 public class SpellCheck {
 
@@ -35,7 +36,7 @@ public class SpellCheck {
 			}
 			
 			
-			//System.out.println(HashMap.find("antidote"));
+			//System.out.println(HashMap.find("drones"));
 			
 			dict.close();
 			
@@ -49,34 +50,28 @@ public class SpellCheck {
 		
 		
 		while(readFile.hasNextWord()){
-		String word = readFile.nextWord();
+			
+			String word = readFile.nextWord();
 		
 			if (!(HashMap.find(word))){
 				
-	
-				if(reversal(HashMap, word)){
-					word = readFile.nextWord();
-				}
-			
-				if (substitution(HashMap, word)){
-					word = readFile.nextWord();
-				}
-			
-				if(omission(HashMap, word)){
-					word = readFile.nextWord();
-				}
-			
-				if (insertion(HashMap, word)){
-					word = readFile.nextWord();
-				}
-			
+				reversal(HashMap, word);
+				substitution(HashMap, word);
+				omission(HashMap, word);
+				insertion(HashMap, word);
 			}
-	
+			
+			
 		}
+			
+		
+	
+		
 		
 		file.close();
 		
-		System.out.println(HashMap.reHashCounter() + " " + HashMap.numberOfElements() + " " + HashMap.averNumProbes());
+		System.out.println(HashMap.reHashCounter() + " " + HashMap.numberOfElements());
+		System.out.println(HashMap.averNumProbes());
 		
 		
 	}
@@ -85,6 +80,7 @@ public class SpellCheck {
 		Boolean delete = false;
 		int i;
 		char temp;
+		//LinkedList<String> WordHolder = new LinkedList<>();
 		
 		
 		String MisspeltWord = word;
@@ -102,6 +98,7 @@ public class SpellCheck {
 
 			if (M1.find(SwappedWord) && !(word.equals(SwappedWord))) {
 				System.out.println(word + "==>" + SwappedWord + "		reversal");
+				//WordHolder.add(SwappedWord);
 				delete = true;
 			}
 			else {
@@ -112,6 +109,7 @@ public class SpellCheck {
 		}
 		
 		return delete;
+		
 
 	}
 
@@ -167,7 +165,7 @@ public class SpellCheck {
 
 	public static Boolean substitution(HashTableMap M1, String word) {
 		Boolean delete = false;
-
+		
 		int i, j;
 		char charholder;
 		char[] alphabet = new char[26];
@@ -196,7 +194,7 @@ public class SpellCheck {
 			}
 
 		}
-
+		
 		return delete;
 	}
 }
