@@ -1,6 +1,4 @@
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 
@@ -249,11 +247,19 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	}
 	
 	public Iterator<String> elements() {
-		//ArrayList<String> arrayList = new ArrayList<String>(Arrays.asList(HashTable));
-		//Iterator<String> itr = arrayList.iterator();
-		Iteratorz itr = new Iteratorz(HashTable);
+		ArrayList<String> arrayList = new ArrayList<String>();
 		
-		return itr;
+		
+		for (int i = 0; i < HashTable.length; i++){
+			if (!(HashTable[i] == null || HashTable[i].equals("-1"))){
+				arrayList.add(HashTable[i]);
+			}
+		}
+		
+		
+		
+		
+		return arrayList.iterator();
 	}
 
 

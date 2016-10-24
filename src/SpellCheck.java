@@ -1,7 +1,7 @@
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
+
 
 
 
@@ -21,10 +21,10 @@ public class SpellCheck {
 		
 		BufferedInputStream dict,file;
 			
-			dict  = new BufferedInputStream(new FileInputStream("banana.txt"));
+			dict  = new BufferedInputStream(new FileInputStream("dictionary.txt"));
 			FileWordRead readDict = new FileWordRead(dict);
 
-			file  = new BufferedInputStream(new FileInputStream("checkTest.txt"));
+			file  = new BufferedInputStream(new FileInputStream("d1.txt"));
 			FileWordRead readFile = new FileWordRead(file);
 
 		try{
@@ -49,9 +49,9 @@ public class SpellCheck {
 			System.exit(0);
 		}
 	
-		//String word;
+		String word;
 		
-		/*while(readFile.hasNextWord()){
+		while(readFile.hasNextWord()){
 			
 			word = readFile.nextWord();
 		
@@ -65,7 +65,7 @@ public class SpellCheck {
 			}
 			
 			
-		}*/
+		}
 			
 		
 	
@@ -74,28 +74,7 @@ public class SpellCheck {
 		file.close();
 		
 		
-		
-		System.out.println(HashMap.reHashCounter() + " " + HashMap.numberOfElements());
-		HashMap.print();
-		System.out.println(HashMap.getLoadFactor());
-		System.out.println(HashMap.getMaxLoadFactor());
-		
-		System.out.println(HashMap.averNumProbes());
-		
-		System.out.println(HashMap.find("alderman"));
-		
-		System.out.println(HashMap.numberOfElements() == 20);
-		
-		Iterator<String> it = HashMap.elements(); 
-		int count = 0;
-		while (it.hasNext()){
-			count++;
-			it.next();
 		}
-		
-		System.out.println(count + " " + HashMap.numberOfElements());
-		
-	}
 
 	public static Boolean reversal(HashTableMap M1, String word) {
 		Boolean delete = false;
