@@ -7,7 +7,7 @@ public interface IMap {
 
 	/** Inserts an entry to the map. Throws exception if key is
 	 *	already present */
-	public void insert(String key);
+	public void insert(String key) throws MapException;
 
 	/** Removes the entry with the specified key from the map. Throws
 	 *	MapException if no entry with key in the map */
