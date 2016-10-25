@@ -5,22 +5,22 @@ import java.util.Iterator;
 
 public class HashTableMap implements IMap, IHashTableMonitor{
 	
-	//-----------------------------------------------//
+	
 	private IHashCode inputCode;
 	private float maxLoadFactor;
 	private int nElements = 0;
 	private String[] HashTable = new String[7];
 	private StringHashCode hCode = new StringHashCode();
 	private double numberOfProbes = 0;
-	private int reHashCounter = 0;
 	private int primeCode = 5;
 	private double numberOfOperations = 0;
 	
 	
-	//-----------------------------------------------//
-	
+
 	public HashTableMap() throws MapException{
+		
 		throw new MapException("Invalid Parameters");
+		
 	}
 	
 
@@ -28,9 +28,11 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		
 		this.inputCode = inputCode;
 		this.maxLoadFactor = maxLoadFactor;
+		
 	} 
 	
-	private int doubleHash(String key){
+	private int doubleHash(String key){// Gets the secondary hash code
+		
 		int doublehashCode = 0;
 		
 		doublehashCode = primeCode - (hCode.giveCode(key) % primeCode) ;
@@ -38,221 +40,258 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		return doublehashCode;
 	}
 	
-	public void insert(String key) throws MapException {
+	public void insert(String key) throws MapException {//	inserts a key into the hashtable
 		
-		//System.out.println((maxLoadFactor * HashTable.length) + " " +  nElements + " filled of " + HashTable.length + " spaces");
 		
-		if (getLoadFactor() < getMaxLoadFactor()) {
-				//System.out.println(key);
-			int firstCode = hCode.giveCode(key) % HashTable.length;
-				if (HashTable[firstCode]  == null || HashTable[firstCode].equals("-1")){
-					HashTable[firstCode] = key;
-					//System.out.println(key + "  added using single hash");
+		
+		if (getLoadFactor() < getMaxLoadFactor()) {//	checks to see if rehashing is required
+			//PRIMARY HASH CODE
+			int firstCode = hCode.giveCode(key) % HashTable.length;//	Sets the primary hash code to a variable to recalculation is not required
+			
+				if (HashTable[firstCode]  == null || HashTable[firstCode].equals("-1")){//	checks to see if the space is empty or contains a dummy value
+				
+					HashTable[firstCode] = key; //inserts key into space
+					
 					nElements += 1;
+				
 					numberOfOperations  += 1;
 					
 					return;
 				}
+			
 				else  {
+					//SECONDARY HASH CODE
 					for (int i = 1; i < HashTable.length; i++){
-						int secondCode = ((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length;
-						if ( HashTable[secondCode] == null || HashTable[secondCode].equals("-1")) {
-							HashTable[secondCode] = key;
-						    //System.out.println(key + "  added using double * " + i + " hash");
+						
+						int secondCode = ((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length; // try the secondary hash code multiplied by i
+						
+						if ( HashTable[secondCode] == null || HashTable[secondCode].equals("-1")) {//	checks for a free space
+							
+							HashTable[secondCode] = key;	//inserts key
+						    
 							nElements += 1;
+							
 							numberOfOperations  += 1;
+							
 							return;
+							
 						}
 						
 						else {
 							numberOfProbes += 1;
 						}
-						
-					
 					}
-					
-					
 				}
 				
-		}else{
-			
-			reHashCounter += 1;
+		}
+		
+		else{
+			//REHASH
 			nElements = 0;
-			//System.out.println("REHASH");
-			//print();
+			
 			reHash();
-			//print();
-			insert(key);
+			
+			insert(key);//	inserts the key that was read before rehashing
+			
 			return;
 		}
 	}
 	
-	public int reHashCounter(){
-		return reHashCounter;
-	}
 	
 	
 	
-	private void reHash() throws MapException{
-		int newArraySize = 2 * HashTable.length;
+	
+	private void reHash() throws MapException{// called when load factor > max load factor
+		
+		int newArraySize = 2 * HashTable.length; //store a number twice the size of the array
+		
 		int i;
 		
-		while (!(isPrime(primeCode))){
+		while (!(isPrime(primeCode))){//gets the new prime number for the secondary hash function
+			
 			primeCode += 1;
+			
 		}
 		
-		while (!(isPrime(newArraySize))){
+		while (!(isPrime(newArraySize))){//gets the new prime number closest to twice the original array size
+			
 			newArraySize += 1;
+			
 		}
-		//System.out.println(newArraySize);
 		
-		String[] HashTableClone = HashTable.clone();
+		
+		String[] HashTableClone = HashTable.clone(); // make a clone of the original array
+		
 		HashTable  = new String[newArraySize];
 		
 		for (i = 0; i < HashTableClone.length; i++){
 			
-			if (HashTableClone[i] != null){
-				int reHashFirstCode = hCode.giveCode(HashTableClone[i]) % HashTable.length; 
-				if (HashTable[reHashFirstCode]  == null || HashTable[reHashFirstCode].equals("-1")){
-					HashTable[reHashFirstCode] = HashTableClone[i];
-					//System.out.println(HashTableClone[i] + "  added using single hash REHASH");
+			if (HashTableClone[i] != null){//checks to see if there is a word
+				
+				int reHashFirstCode = hCode.giveCode(HashTableClone[i]) % HashTable.length; //calculate a primary hash code
+				
+				if (HashTable[reHashFirstCode]  == null || HashTable[reHashFirstCode].equals("-1")){// check for a free space or dummy value
+					
+					HashTable[reHashFirstCode] = HashTableClone[i];// insert word into new hash table
+					
 					nElements += 1;
+					
 					numberOfOperations  += 1;
 					
 					
 				}
+				
 				else  {
-					for (int i1 = 1; i1 < HashTableClone.length; i1++){
+					
+					for (int i1 = 1; i1 < HashTableClone.length; i1++){// does the same as above but with the secondary hash function
+						
 						int reHashSecondCode = ((hCode.giveCode(HashTableClone[i]) % HashTable.length) + (doubleHash(HashTableClone[i]) * i1)) % HashTable.length; 
+						
 						if ( HashTable[reHashSecondCode] == null || HashTable[reHashSecondCode].equals("-1")) {
+							
 							HashTable[reHashSecondCode] = HashTableClone[i];
-						    //System.out.println(HashTableClone[i] + "  added using double * " + i1 + " hash REHASH");
+						    
 							nElements += 1;
+							
 							numberOfOperations  += 1;
+							
 							break;
 						}
 						
 						else {
 							numberOfProbes += 1;
 						}
-						
-					
 					}
-					
-					
 				}
 			}
 		}
+		
 		return;
-		
-		
 		
 	}
 	
 	
 	
-	private Boolean isPrime(int newArraySize){// write reference 
+	private Boolean isPrime(int newArraySize){// reference - http://www.mkyong.com/java/how-to-determine-a-prime-number-in-java/
 		
 		if (newArraySize % 2 == 0){
+			
 			return false;
 		}
+		
 		for(int i = 3; i*i < newArraySize; i += 2){
+			
 			if (newArraySize % i == 0){
+				
 				return false;
 			}
 		}
+		
 		return true;
 	}
 
 	
-	public void remove(String key) throws MapException  {
+	public void remove(String key) throws MapException  {// removes a key from the array otherwise throws an exception
+		
 		int firstRemoveCode = hCode.giveCode(key) % HashTable.length;
-	if (HashTable[firstRemoveCode] != null && HashTable[firstRemoveCode].equals(key)){
-		HashTable[firstRemoveCode] = "-1";
-		//System.out.println("removed " + key);
-		numberOfOperations  += 1;
-		nElements -= 1;
-	}
-	else {
-		for (int i = 1; i < HashTable.length; i++){
-			//System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + i + " " + (doubleHash(key) * i) % HashTable.length);
-			int secondRemoveCode = ((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length;
-			if ((HashTable[secondRemoveCode] != null && HashTable[secondRemoveCode].equals(key))) {
-				HashTable[secondRemoveCode] = "-1";
-				//System.out.println("removed " + key);
-				numberOfOperations  += 1;
-				nElements -= 1;
-				return;
-			}
+		
+		if (HashTable[firstRemoveCode] != null && HashTable[firstRemoveCode].equals(key)){//tries to find key using primary hash function
 			
-		}
+			HashTable[firstRemoveCode] = "-1";
 		
-		throw new MapException(key + " does not exist");
-		
-	}
-
-	
-	}
-
-	
-	public boolean find(String key) {
-		
-		int firstFindCode = hCode.giveCode(key) % HashTable.length;
-		if (HashTable[firstFindCode] != null && HashTable[firstFindCode].equals(key)){
 			numberOfOperations  += 1;
+			
+			nElements -= 1;
+	}
+		
+		else {
+		
+			for (int i = 1; i < HashTable.length; i++){
+			
+				int secondRemoveCode = ((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length;//tries to find key using secondary hash function
+			
+				if ((HashTable[secondRemoveCode] != null && HashTable[secondRemoveCode].equals(key))) {
+				
+					HashTable[secondRemoveCode] = "-1";
+				
+					numberOfOperations  += 1;
+				
+					nElements -= 1;
+				
+					return;
+				}
+			}
+		
+			throw new MapException(key + " does not exist");
+		
+		}
+	}
+
+	
+	public boolean find(String key) {//returns true if key exists in array
+		
+		int firstFindCode = hCode.giveCode(key) % HashTable.length;// tries to find using primary hash function
+		
+		if (HashTable[firstFindCode] != null && HashTable[firstFindCode].equals(key)){
+			
+			numberOfOperations  += 1;
+			
 			return true;
 		}
+		
 		else {
 			for (int i = 1; i < HashTable.length; i++){
-				//System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + (doubleHash(key) * i) % HashTable.length + " " + key);
-				int secondFindCode = ((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length;
+				
+				int secondFindCode = ((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length;//tries to find using secondary hash function
+				
 				if (HashTable[secondFindCode] != null && HashTable[secondFindCode].equals(key)) {
+					
 					numberOfOperations  += 1;
+					
 					return true;
+					
 				}
 				else if (i == HashTable.length){
+					
 					return false;
+					
 				}
 			}
+			
 			return false;
 		}
 		
-		
-	}
-
-	public void print(){
-		System.out.println("nElements - " + nElements + " Length - " + HashTable.length);
-		
 	}
 
 	
-	public int numberOfElements() {
+
+	public int numberOfElements() {//returns number of occupied spaces in array
+		
 		return (int)nElements;
+		
 	}
 
-	
-	
-
-	
-	public float getMaxLoadFactor() {
+	public float getMaxLoadFactor() {//returns maximum load factor
+		
 		return maxLoadFactor;
+		
 	}
 
-	
-	public float getLoadFactor() {
+	public float getLoadFactor() {//returns the load factor
 		
 		return ((float) nElements / (float) HashTable.length);
+		
 	}
 
-	
-	public float averNumProbes() {
+	public float averNumProbes() {//returns the average number of probes
 		
-	return ((float) numberOfProbes / (float) numberOfOperations);
+		return ((float) numberOfProbes / (float) numberOfOperations);
+		
 	}
 	
-	public Iterator<String> elements() {
+	public Iterator<String> elements() {//returns an iterator
+		//convert the array into an array list to retrieve the iterator
 		ArrayList<String> arrayList = new ArrayList<String>();
-		
 		
 		for (int i = 0; i < HashTable.length; i++){
 			if (!(HashTable[i] == null || HashTable[i].equals("-1"))){
@@ -260,11 +299,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 			}
 		}
 		
-		
-		
-		
 		return arrayList.iterator();
 	}
-
 
 }
