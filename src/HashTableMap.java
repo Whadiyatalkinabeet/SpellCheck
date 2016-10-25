@@ -44,8 +44,9 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		
 		if (getLoadFactor() < getMaxLoadFactor()) {
 				//System.out.println(key);
-				if (HashTable[hCode.giveCode(key) % HashTable.length]  == null || HashTable[hCode.giveCode(key) % HashTable.length].equals("-1")){
-					HashTable[hCode.giveCode(key) % HashTable.length] = key;
+			int firstCode = hCode.giveCode(key) % HashTable.length;
+				if (HashTable[firstCode]  == null || HashTable[firstCode].equals("-1")){
+					HashTable[firstCode] = key;
 					//System.out.println(key + "  added using single hash");
 					nElements += 1;
 					numberOfOperations  += 1;
@@ -54,9 +55,9 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 				}
 				else  {
 					for (int i = 1; i < HashTable.length; i++){
-						
-						if ( HashTable[((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length] == null || HashTable[((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length].equals("-1")) {
-							HashTable[((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length] = key;
+						int secondCode = ((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length;
+						if ( HashTable[secondCode] == null || HashTable[secondCode].equals("-1")) {
+							HashTable[secondCode] = key;
 						    //System.out.println(key + "  added using double * " + i + " hash");
 							nElements += 1;
 							numberOfOperations  += 1;
@@ -74,7 +75,7 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 				}
 				
 		}else{
-			String holder = key;
+			
 			reHashCounter += 1;
 			nElements = 0;
 			//System.out.println("REHASH");
@@ -109,9 +110,11 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 		HashTable  = new String[newArraySize];
 		
 		for (i = 0; i < HashTableClone.length; i++){
+			
 			if (HashTableClone[i] != null){
-				if (HashTable[hCode.giveCode(HashTableClone[i]) % HashTable.length]  == null || HashTable[hCode.giveCode(HashTableClone[i]) % HashTable.length].equals("-1")){
-					HashTable[hCode.giveCode(HashTableClone[i]) % HashTable.length] = HashTableClone[i];
+				int reHashFirstCode = hCode.giveCode(HashTableClone[i]) % HashTable.length; 
+				if (HashTable[reHashFirstCode]  == null || HashTable[reHashFirstCode].equals("-1")){
+					HashTable[reHashFirstCode] = HashTableClone[i];
 					//System.out.println(HashTableClone[i] + "  added using single hash REHASH");
 					nElements += 1;
 					numberOfOperations  += 1;
@@ -120,9 +123,9 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 				}
 				else  {
 					for (int i1 = 1; i1 < HashTableClone.length; i1++){
-						
-						if ( HashTable[((hCode.giveCode(HashTableClone[i]) % HashTable.length) + (doubleHash(HashTableClone[i]) * i1)) % HashTable.length] == null || HashTable[((hCode.giveCode(HashTableClone[i]) % HashTable.length) + (doubleHash(HashTableClone[i]) * i1)) % HashTable.length].equals("-1")) {
-							HashTable[((hCode.giveCode(HashTableClone[i]) % HashTable.length) + (doubleHash(HashTableClone[i]) * i1)) % HashTable.length] = HashTableClone[i];
+						int reHashSecondCode = ((hCode.giveCode(HashTableClone[i]) % HashTable.length) + (doubleHash(HashTableClone[i]) * i1)) % HashTable.length; 
+						if ( HashTable[reHashSecondCode] == null || HashTable[reHashSecondCode].equals("-1")) {
+							HashTable[reHashSecondCode] = HashTableClone[i];
 						    //System.out.println(HashTableClone[i] + "  added using double * " + i1 + " hash REHASH");
 							nElements += 1;
 							numberOfOperations  += 1;
@@ -163,8 +166,9 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 
 	
 	public void remove(String key) throws MapException  {
-	if (HashTable[hCode.giveCode(key) % HashTable.length] != null && HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
-		HashTable[hCode.giveCode(key) % HashTable.length] = "-1";
+		int firstRemoveCode = hCode.giveCode(key) % HashTable.length;
+	if (HashTable[firstRemoveCode] != null && HashTable[firstRemoveCode].equals(key)){
+		HashTable[firstRemoveCode] = "-1";
 		//System.out.println("removed " + key);
 		numberOfOperations  += 1;
 		nElements -= 1;
@@ -172,9 +176,9 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	else {
 		for (int i = 1; i < HashTable.length; i++){
 			//System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + i + " " + (doubleHash(key) * i) % HashTable.length);
-			
-			if ((HashTable[((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length] != null && HashTable[((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length].equals(key))) {
-				HashTable[((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length] = "-1";
+			int secondRemoveCode = ((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length;
+			if ((HashTable[secondRemoveCode] != null && HashTable[secondRemoveCode].equals(key))) {
+				HashTable[secondRemoveCode] = "-1";
 				//System.out.println("removed " + key);
 				numberOfOperations  += 1;
 				nElements -= 1;
@@ -193,16 +197,16 @@ public class HashTableMap implements IMap, IHashTableMonitor{
 	
 	public boolean find(String key) {
 		
-		
-		if (HashTable[hCode.giveCode(key) % HashTable.length] != null && HashTable[hCode.giveCode(key) % HashTable.length].equals(key)){
+		int firstFindCode = hCode.giveCode(key) % HashTable.length;
+		if (HashTable[firstFindCode] != null && HashTable[firstFindCode].equals(key)){
 			numberOfOperations  += 1;
 			return true;
 		}
 		else {
 			for (int i = 1; i < HashTable.length; i++){
 				//System.out.println(HashTable[(doubleHash(key) * i) % HashTable.length] + " " + (doubleHash(key) * i) % HashTable.length + " " + key);
-				
-				if (HashTable[((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length] != null && HashTable[((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length].equals(key)) {
+				int secondFindCode = ((hCode.giveCode(key) % HashTable.length) + (doubleHash(key) * i)) % HashTable.length;
+				if (HashTable[secondFindCode] != null && HashTable[secondFindCode].equals(key)) {
 					numberOfOperations  += 1;
 					return true;
 				}

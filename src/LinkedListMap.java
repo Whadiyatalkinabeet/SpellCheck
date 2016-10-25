@@ -11,7 +11,12 @@ public class LinkedListMap implements IMap {
 	
 
 	public void insert(String key){
-		M.add(key);
+		if (!(find(key))){
+			M.add(key);
+		}
+		else{
+			return;
+		}
 	}
 	
 	public void remove(String key) throws MapException {
@@ -28,18 +33,11 @@ public class LinkedListMap implements IMap {
 	}
 
 	public Iterator<String> elements() {
-		return null;
+		return M.iterator();
 	}
 
 
-	public boolean hasNext() {
-		return false;
-	}
-
-
-	public Object next() {
-		return null;
-	}
+	
 
 	
 	
